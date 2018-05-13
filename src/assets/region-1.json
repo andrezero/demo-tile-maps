@@ -1,0 +1,77 @@
+{
+  "pos": {
+    "x": -20,
+    "y": -20
+  },
+  "size": {
+    "w": 40,
+    "h": 40
+  },
+  "sets": [{
+    "type": "rect",
+    "pos": {
+      "x": 0,
+      "y": 0
+    },
+    "size": {
+      "w": 40,
+      "h": 40
+    },
+    "textures": [{
+      "weight": 1,
+      "type": "grass-1"
+    },{
+      "weight": 2,
+      "type": "grass-2"
+    }]
+  }, {
+    "type": "rect",
+    "pos": {
+      "x": 0,
+      "y": 0
+    },
+    "size": {
+      "w": 40,
+      "h": 40
+    },
+    "textures": [{
+      "weight": 1,
+      "type": "stone-1"
+    },{
+      "weight": 2,
+      "type": "stone-2"
+    },{
+      "weight": 30
+    }]
+  }, {
+    "type": "circle",
+    "pos": {
+      "x": 0,
+      "y": 0
+    },
+    "radius": {
+      "x": 10
+    },
+    "textures": [{
+      "weight": 1,
+      "type": "bricks-1"
+    }, {
+      "weight": 9
+    }]
+  }, {
+    "type": "matrix",
+    "pos": {
+      "x": 0,
+      "y": 0
+    },
+    "textures": [
+      [null, null, null, 40, null, null, null],
+      [null, null, null, 70, null, null, null],
+      [null, null, null, 40, null, null, null],
+      [40, 70, 40, 70, 40, 70, 40],
+      [null, null, null, 40, null, null, null],
+      [null, null, null, 70, null, null, null],
+      [null, null, null, 40, null, null, null]
+    ]
+  }]
+}

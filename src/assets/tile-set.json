@@ -1,0 +1,17 @@
+{
+  "props": {
+    "grass-1": {},
+    "grass-2": {},
+    "stone-1": {},
+    "stone-2": {},
+    "marble-1": {}
+  },
+  "size": {
+    "w": 128,
+    "h": 128
+  },
+  "tiles": [
+    ["grass-1", "grass-2", "grass-3", "grass-4", "dirt-1", "dirt-2", "stone-1", "stone-2", "stone-3", "stone-4", "stone-5", "marble-1", "clay-1", "clay-2", "clay-3", "clay-4", "grass-5", "grass-6", "water-1", "water-2", null, null, null, null, null, null, null],
+    ["yellow-left"]
+  ]
+}
