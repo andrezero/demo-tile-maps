@@ -5,10 +5,13 @@ import { MapBgView } from './map-bg';
 import { GridView } from './grid';
 
 class GameView extends View {
-  _constructor (game, cache) {
+  constructor (v, target, game, cache) {
+    super(v, target);
+
     this._game = game;
     this._cache = cache;
-    this._camera = this._vm.getViewport('camera');
+
+    this._viewport = this._v.get('viewport:camera');
 
     const tileImg = cache.get('./assets/tile-set.png');
     const tileData = cache.get('./assets/tile-set.json');
@@ -19,31 +22,31 @@ class GameView extends View {
     const region = TileRegion.fromSets(regionData.pos, regionData.size, regionData.sets);
     this._tileMap.addRegion(region);
 
-    this._createChild(MapBgView, [this._tileMap], '2d', 'camera', 'layer-bg', 0);
+    this._createChild(MapBgView, { layer: 'bg', zIndex: 0 }, this._tileMap);
 
     this._game.on('new-player', (player) => {
       this._player = player;
-      this._createChild(PlayerView, [player, cache], '2d', 'camera', 'layer-1', 0);
+      this._createChild(PlayerView, { viewport: 'camera', layer: 'stage' }, player, cache);
 
       this._player.on('move', () => {
-        this._camera.setPos({ x: this._player._pos.x, y: this._player._pos.y });
-        this._camera.setZoom(1 - this._player._speed / 3);
+        this._viewport.setPos({ x: this._player._pos.x, y: this._player._pos.y });
+        this._viewport.setZoom(1 - this._player._speed / 3);
       });
     });
 
     this._game.on('new-grid', (grid) => {
-      this._createChild(GridView, [grid], '2d', 'camera', 'layer-bg', 1);
+      this._createChild(GridView, { layer: 'bg', zIndex: 1 }, grid);
     });
   }
 
-  _preRender (delta, timestamp) {
+  _preUpdate () {
     if (!this._wave) {
-      this._wave = Wave.sine(timestamp, 0, Math.PI / 30, 5000);
+      this._wave = Wave.sine(this._time.t, 0, Math.PI / 30, 5000);
     }
 
-    const oscillatingNumber = this._wave(timestamp);
-    this._camera.setScale(oscillatingNumber + 2);
-    this._camera.setRotation(oscillatingNumber);
+    const oscillatingNumber = this._wave(this._time);
+    this._viewport.setScale(oscillatingNumber + 2);
+    this._viewport.setRotation(oscillatingNumber);
   }
 }
 

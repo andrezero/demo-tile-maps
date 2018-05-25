@@ -1,7 +1,9 @@
 import { View, TileMapPreRenderer } from '@picabia/picabia';
 
 class MapBgView extends View {
-  _constructor (tileMap) {
+  constructor (v, target, tileMap) {
+    super(v, target);
+
     this._tileMap = tileMap;
     this._mapPreRender = new TileMapPreRenderer(this._tileMap);
 
@@ -24,13 +26,11 @@ class MapBgView extends View {
     this._viewportChange();
   }
 
-  _preRender (delta, timestamp) {
+  _preUpdate () {
     this._mapPreRender.render();
   }
 
-  _render (delta, timestamp) {
-    const renderer = this._renderer;
-
+  render (renderer) {
     const source = this._mapPreRender.source;
     const offset = this._mapPreRender.offset;
     const pos = this._mapPreRender.pos;

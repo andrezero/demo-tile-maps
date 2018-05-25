@@ -1,11 +1,11 @@
-import { Container, Frame, ViewManager, Viewport, CanvasLayer2d, CanvasRenderer2d, KeyboardInput } from '@picabia/picabia';
+import { Container, Frame, ViewEngine, Viewport, CanvasLayer2d, CanvasRenderer2d, KeyboardInput } from '@picabia/picabia';
+import { FpsCanvas } from '@picabia/component-fps';
 
 import { GameModel } from './model/game';
 import { GameView } from './view/game';
 
 class Application {
   constructor (dom, cache) {
-    this._dom = dom;
     this._cache = cache;
 
     // -- model
@@ -19,16 +19,18 @@ class Application {
       ratio: 4 / 3,
       maxPixels: 1500 * 1500
     };
-    this._container = new Container('main', this._dom, containerOptions);
+    this._container = new Container('main', dom, containerOptions);
 
-    this._vm = new ViewManager();
-    this._vm.addContainer(this._container);
+    this._v = new ViewEngine(dom);
+    this._v.add(this._container);
+
+    const renderer = this._v.add(new CanvasRenderer2d('2d'));
 
     const viewportOptions = {
       pos: { x: 0, y: 0 }
     };
     this._viewport = new Viewport('camera', viewportOptions);
-    this._vm.addViewport(this._viewport);
+    this._v.add(this._viewport);
 
     this._container.on('resize', (size) => {
       this._viewport.setSize(size);
@@ -39,9 +41,11 @@ class Application {
       }
     });
 
-    this._vm.addRenderer(new CanvasRenderer2d('2d'));
-    this._vm.addLayer('main', new CanvasLayer2d('layer-bg', { zIndex: -1 }));
-    this._vm.addLayer('main', new CanvasLayer2d('layer-1', { zIndex: 1 }));
+    this._v.add(new CanvasLayer2d('bg', this._container, { zIndex: -1 }));
+    this._v.add(new CanvasLayer2d('stage', this._container, { zIndex: 1 }));
+    this._v.add(new FpsCanvas(this._v, { renderer }, this._container));
+
+    this._v.add(new GameView(this._v, { renderer }, this._game, this._cache));
 
     // -- input
 
@@ -62,8 +66,6 @@ class Application {
 
     this._keyboard.on('control', (control) => this._game.input(control));
 
-    const rootView = new GameView(this._vm, [this._game, this._cache]);
-
     // -- start
 
     this.resize();
@@ -75,13 +77,14 @@ class Application {
       intervalMs: 1000 / 50
     };
     this._frame = new Frame(frameOptions);
-    this._frame.on('update', (delta, timestamp) => this._game.update(delta, timestamp));
-    this._frame.on('render', (delta, timestamp) => this._vm.render(rootView, delta, timestamp));
+    this._frame.on('update', (time) => this._game.update(time));
+    this._frame.on('render', (time) => this._v.render(time));
     this._frame.start();
   }
 
   resize () {
     this._container.resize();
+    this._v.resize();
   }
 }
 
